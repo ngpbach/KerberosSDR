@@ -43,8 +43,8 @@ NPROC=`expr $(nproc) - 1`
 #sudo cpufreq-set -d 1.8GHz
 
 
-# Trap SIGINT (2) (ctrl-C) as well as SIGTERM (6), run cleanup if either is caught
-trap cleanup 2 6
+# Trap SIGINT (2) (ctrl-C) as well as SIGTERM (15), run cleanup if either is caught
+trap cleanup 2 15
 
 cleanup() {
 	# Kill all processes that have been spawned by this program.
@@ -68,16 +68,16 @@ echo '3' | sudo dd of=/proc/sys/vm/drop_caches status=none
 echo "Starting KerberosSDR"
 
 # Check for old processes that could interfere, print warning: 
-for string in rtl sim _recei.*sync gate hydra ; do 
-    pgrep -af $string 
-	if [[ $? -eq 0 ]] ; then 
+for string in _receiver/.* hydra ; do 
+    pgrep -af $string
+	if [[ $? -eq 0 ]] ; then
         if [[ "$FORCE_KILL" != "yes" ]]; then
             read -p "The processes listed above were found and could interfere with the program. Do you want to kill them now? [y|N]" -n1 -r
             echo # newline. 
 	    fi
 		if [[ "$FORCE_KILL" == "yes" || "$REPLY" =~ ^[Yy]$ ]]
 		then
-			sudo pkill $string
+			sudo pkill -f $string
 		else
 			echo "OK, not killing these processes. Hope you know what you're doing"
 		fi
@@ -113,7 +113,7 @@ curr_user=$(whoami)
 sudo chrt -r 50 taskset -c $NPROC ionice -c 1 -n 0 ./_receiver/C/rtl_daq $BUFF_SIZE 2>$RTLDAQLOG 1| \
 	sudo chrt -r 50 taskset -c $NPROC ./_receiver/C/sync $BUFF_SIZE 2>$SYNCLOG 1| \
 	sudo chrt -r 50 taskset -c $NPROC ./_receiver/C/gate $BUFF_SIZE 2>$GATELOG 1| \
-	sudo nice -n -20 sudo -u $curr_user python3 -O _GUI/hydra_main_window.py $BUFF_SIZE $IPADDR &>$PYTHONLOG &
+	sudo nice -n -20 sudo -u $curr_user python3 -O _GUI/hydra_main_window.py $BUFF_SIZE $IPADDR 
 
 # Start PHP webserver which serves the updating images
 echo "Python Server running at $IPADDR:8080"

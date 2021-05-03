@@ -982,7 +982,7 @@ def pr():
     
     en_peakhold = form.checkBox_en_peakhold.checkState()
 
-    ip_addr = form.ip_addr
+    ip_addr = request.urlparts.hostname
 
     return template ('pr.tpl', {'en_pr':en_pr,
 				'ref_ch':ref_ch,
@@ -1074,7 +1074,7 @@ def doa():
     en_MEM = form.checkBox_en_DOA_MEM.checkState()
     en_MUSIC = form.checkBox_en_DOA_MUSIC.checkState()
     en_fbavg = form.checkBox_en_DOA_FB_avg.checkState()
-    ip_addr = form.ip_addr
+    ip_addr = request.urlparts.hostname
 
     return template ('doa.tpl', {'ant_arrangement_index':ant_arrangement_index,
 #				'ant_spacing':ant_spacing,
@@ -1132,7 +1132,7 @@ def do_doa():
 def sync():
     en_sync = form.checkBox_en_sync_display.checkState()
     en_noise = form.checkBox_en_noise_source.checkState()
-    ip_addr = form.ip_addr
+    ip_addr = request.urlparts.hostname
     return template ('sync.tpl', {'en_sync':en_sync,
 				'en_noise':en_noise,
 				'ip_addr':ip_addr})
@@ -1192,7 +1192,7 @@ def init():
     filt_bw = form.doubleSpinBox_filterbw.value()
     fir_size = form.spinBox_fir_tap_size.value()
     decimation = form.spinBox_decimation.value()
-    ip_addr = form.ip_addr
+    ip_addr = request.urlparts.hostname
 
     return template ('init.tpl', {'center_freq':center_freq,
 				'samp_index':samp_index,
